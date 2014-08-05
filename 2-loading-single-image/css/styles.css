@@ -1,0 +1,30 @@
+body {
+	background-color: #3d3d3d;
+	color: #00cd12;
+	font-family: Courier New, monospace;
+	text-align: center;
+}
+
+.drop-area {
+	border: 2px dotted #00eb15;
+	font-size: 30px;
+	line-height: 1.5;
+	margin: 0 auto;
+	padding: 10px;
+	text-align: center;
+	width: 400px;
+}
+.drop-area.over {
+	background-color: #00eb15;
+	color: #3d3d3d;
+}
+
+.image-container {
+	border: 1px solid #00eb15;
+	padding: 10px;
+}
+
+.data-container {
+	padding: 0 10px 20px;
+	text-align: left;
+}

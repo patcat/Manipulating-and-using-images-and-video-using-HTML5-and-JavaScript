@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Loading a video</title>
+		<link rel="stylesheet" href="css/styles.css">
+	</head>
+	<body>
+		<h1>Video file feeder</h1>
+		<div class="video-container">
+			<video id="our-video" autoplay>
+				<source src="video/robots.webm" type="video/webm">
+				<source src="video/robots.ogg" type="video/ogg">
+				<source src="video/robots.mp4" type="video/mp4">
+			</video>
+		</div><!-- video-container -->
+		
+		<canvas id="our-canvas" class="image-container" width="352" height="288"></canvas>
+
+		<script src="js/jquery-2.1.1.min.js"></script>
+		<script src="js/scripts.js"></script>
+	</body>
+</html>

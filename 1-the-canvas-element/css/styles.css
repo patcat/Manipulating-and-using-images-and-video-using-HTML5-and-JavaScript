@@ -1,0 +1,10 @@
+body {
+	background-color: #fff;
+	color: #333;
+	font-family: Courier New, monospace;
+	text-align: center;
+}
+
+.our-sample-canvas {
+	border: 1px solid #333;
+}
