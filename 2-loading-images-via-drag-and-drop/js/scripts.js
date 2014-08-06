@@ -20,7 +20,7 @@ function initImageLoader() {
   }, true);
 
   window.addEventListener('drop', function(e) {
-    var files = e.dataTransfer.files;
+    var data = e.dataTransfer;
 
     e.preventDefault();
 

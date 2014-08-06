@@ -32,24 +32,17 @@ function loadFile(file) {
 }
 
 function imageFromCanvas() {
-  clearCanvas(canvas);
-
-  data = image.data;
+  var data = image.data;
   for (var i = 0; i < data.length; i+=4) {
     // data[i] is red
     // data[i+1] is green
     // data[i+2] is blue;
     
-    //data[i] = 0;
+    data[i] = 255;
     //data[i+1] = 0;
     //data[i+2] = 0;
   }
   image.data = data;
     
   context.putImageData(image, 0, 0);
-}
-
-function clearCanvas(canvas) {
-  canvas.height = canvas.height;
-  canvas.width = canvas.width;
 }

@@ -32,8 +32,6 @@ function loadFile(file, filter, options) {
 }
 
 function imageFromCanvas(filter, options) {
-  clearCanvas(canvas);
-
   data = image.data;
   for (var i = 0; i < data.length; i+=4) {
     var red = data[i],
@@ -119,20 +117,10 @@ function imageFromCanvas(filter, options) {
         break;
       case 'blackandwhiteluminance':
         var luminance = ((red * 299) + (green * 587) + (blue * 114)) / 1000; // Gives a value from 0 - 255
-        red = luminance
-        green = luminance
+        red = luminance;
+        green = luminance;
         blue = luminance;
-        alpha = 255;
 
-        break;
-      case 'darkness':
-        if (options) {
-          if (options.min) {
-            if (red > options.min) red = options.min;
-            if (green > options.min) green = options.min;
-            if (blue > options.min) blue = options.min;
-          }
-        }
         break;
     }
     data[i] = red;
@@ -142,9 +130,4 @@ function imageFromCanvas(filter, options) {
   image.data = data;
     
   context.putImageData(image, 0, 0);
-}
-
-function clearCanvas(canvas) {
-  canvas.height = canvas.height;
-  canvas.width = canvas.width;
 }
