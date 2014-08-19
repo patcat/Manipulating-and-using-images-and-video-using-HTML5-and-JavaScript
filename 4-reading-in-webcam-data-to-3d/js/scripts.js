@@ -1,5 +1,6 @@
 var video = document.getElementById('our-video'),
     canvas = document.getElementById('our-canvas'),
+    context = canvas.getContext('2d'),
     renderer = new THREE.WebGLRenderer({antialias: true}),
     canvasWidth = Math.floor(canvas.clientWidth),
     canvasHeight = Math.floor(canvas.clientHeight),
@@ -18,21 +19,12 @@ var video = document.getElementById('our-video'),
         depthTest: false,
         transparent: true,
         vertexColors: true //allows 1 color per particle
-    }),
-    context = canvas.getContext('2d'),
-    filter = window.location.hash.split('#')[1],
-    requestFrame; // we store our requestanimationframe in here so we can stop and start it again
+    });
+
+renderer.setSize(canvasWidth, canvasHeight);
+renderer.setClearColorHex(0x000000, 1.0);
 
 video.playbackRate = 0.5;
-
-var webcamConstraints = {
-  video: {
-    mandatory: {
-      maxWidth: 300,
-      maxHeight: 300
-    }
-  }
-};
 
 window.addEventListener('DOMContentLoaded', function() {
    navigator.getUserMedia = (navigator.getUserMedia || 
@@ -40,7 +32,6 @@ window.addEventListener('DOMContentLoaded', function() {
                              navigator.mozGetUserMedia || 
                              navigator.msGetUserMedia);
    if (navigator.getUserMedia) {
-      // Request access to video only
       navigator.getUserMedia({
         video: {
           mandatory: {
@@ -67,44 +58,39 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 video.addEventListener('play', function() {
-  draw(video, context, canvasWidth, canvasHeight, filter);
+  draw();
 }, false);
 
-draw(video, context, canvasWidth, canvasHeight, filter);
-
-function draw(v,c,w,h,filter) {
+function draw() {
   var imageData,
     data,
-    finalData = [],
     pixels = 150,
-    squareSize = w / pixels,
+    squareSize = canvasWidth / pixels,
     geometry = new THREE.Geometry(),
     particleIndex = 0,
     particleColors = new Array(),
     startingX = -cubeWidth * pixels / 2,
     startingY = cubeHeight * pixels / 2;
 
-  if (v.paused || v.ended) return false;
+  if (video.paused || video.ended) return false;
   
-  c.drawImage(v,0,0,w,h);
+  context.drawImage(video,0,0,canvasWidth,canvasHeight);
 
-  imageData = c.getImageData(0,0,w,h);
+  imageData = context.getImageData(0,0,canvasWidth,canvasHeight);
 
   data = imageData.data;
 
-  for (y=0; y<pixels; y++) {
-    cubes[y] = new Array();
-
-    for (x=0; x<pixels; x++) {
+  for (x=0; x<pixels; x++) {
+    for (y=0; y<pixels; y++) {
       var xPos = x * cubeWidth + startingX,
-          yPos = -y * cubeWidth + startingY,
-          red = imageData.data[((y * (imageData.width * 4)) + (x * 4)) + (canvasWidth)],
-          green = imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 1 + (canvasWidth)],
-          blue = imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 2 + (canvasWidth)],
+          yPos = -y * cubeHeight + startingY,
+          red = imageData.data[((y * (imageData.width * 4)) + (x * 4))],
+          green = imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 1],
+          blue = imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 2],
           zPos = (red + green + blue) / 3;
           particle = new THREE.Vertex(new THREE.Vector3(xPos, yPos, zPos));
 
-        particleColors[particleIndex] = new THREE.Color(0xff6600);
+        particleColors[particleIndex] = new THREE.Color(0xffffff);
         particleColors[particleIndex].setRGB((red/255), (green/255), (blue/255));
 
         particleIndex++;
@@ -129,13 +115,9 @@ function draw(v,c,w,h,filter) {
   renderer.render(scene, camera);
 
   requestAnimFrame(function() {
-    draw(v,c,w,h,filter);
+    draw();
   });
 }
-
-renderer.setSize(canvasWidth, canvasHeight);
-renderer.setClearColorHex(0x000000, 1.0);
-renderer.clear();   
 
 $('#our-3d').append(renderer.domElement);
 

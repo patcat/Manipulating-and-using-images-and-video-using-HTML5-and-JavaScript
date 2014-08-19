@@ -1,24 +1,22 @@
 var video = document.getElementById('our-video'),
     canvas = document.getElementById('our-canvas'),
+    context = canvas.getContext('2d'),
     canvasWidth = Math.floor(canvas.clientWidth),
-    canvasHeight = Math.floor(canvas.clientHeight),
-    context = canvas.getContext('2d');
+    canvasHeight = Math.floor(canvas.clientHeight);
 
 video.addEventListener('play', function() {
-  draw(video, context, canvasWidth, canvasHeight);
+  draw();
 }, false);
 
-draw(video, context, canvasWidth, canvasHeight);
-
-function draw(v,c,w,h) {
+function draw() {
   var imageData,
-    data;
+      data;
 
-  if (v.paused || v.ended) return false;
+  if (video.paused || video.ended) return false;
   
-  c.drawImage(v,0,0,w,h);
+  context.drawImage(video,0,0,canvasWidth,canvasHeight);
 
-  imageData = c.getImageData(0,0,w,h);
+  imageData = context.getImageData(0,0,canvasWidth,canvasHeight);
 
   data = imageData.data;
   for (var i = 0; i < data.length; i+=4) {
@@ -27,14 +25,14 @@ function draw(v,c,w,h) {
     // data[i+2] is blue;
     //data[i] = 0;
     //data[i+1] = 0;
-    //data[i+2] = 0;
+    data[i+2] = 255;
   }
   imageData.data = data;
 
-  c.putImageData(imageData, 0, 0);
+  context.putImageData(imageData, 0, 0);
 
   requestAnimFrame(function() {
-    draw(v,c,w,h);
+    draw();
   });
 }
 

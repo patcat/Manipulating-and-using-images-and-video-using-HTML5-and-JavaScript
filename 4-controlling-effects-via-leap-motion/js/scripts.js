@@ -1,24 +1,15 @@
 var video = document.getElementById('our-video'),
     canvas = document.getElementById('our-canvas'),
+    context = canvas.getContext('2d'),
     canvasWidth = Math.floor(canvas.clientWidth),
     canvasHeight = Math.floor(canvas.clientHeight),
-    context = canvas.getContext('2d'),
-    filter = window.location.hash.split('#')[1],
-    requestFrame,
+    filter,
+    options,
     minThreshold,
     maxThreshold; // we store our requestanimationframe in here so we can stop and start it again
 
-window.requestAnimFrame = (function() {
-  return window.requestAnimationFrame       ||
-         window.webkitRequestAnimationFrame ||
-         window.mozRequestAnimationFrame    ||
-         function(callback) {
-           window.setTimeout(callback, 1000 / 60);
-         };
-})();
-
 video.addEventListener('play', function() {
-  draw(video, context, canvasWidth, canvasHeight, filter);
+  draw();
 }, false);
 
 Leap.loop({background: true}, {
@@ -26,7 +17,7 @@ Leap.loop({background: true}, {
     var pinchStrength = hand.pinchStrength.toPrecision(2),
         rotation = -1 * (hand.roll() * (180 / Math.PI) - 180);
 
-    console.log(hand.frame.hands.length);
+    console.log(pinchStrength);
 
     if (hand.frame.hands.length > 1) {
       if (hand.type == 'left') {
@@ -48,23 +39,20 @@ Leap.loop({background: true}, {
   }
 });
 
-function changeFilter(filter, options) {
-  cancelAnimationFrame(requestFrame);
-  draw(video, context, canvasWidth, canvasHeight, filter, options);
+function changeFilter(f, o) {
+  filter = f;
+  options = o;
 }
 
-draw(video, context, canvasWidth, canvasHeight, filter);
-
-function draw(v, c, w, h, filter, options) {
+function draw() {
   var imageData,
-    data,
-    finalData = [];
+    data;
 
-  if (v.paused || v.ended) return false;
+  if (video.paused || video.ended) return false;
   
-  c.drawImage(v,0,0,w,h);
+  context.drawImage(video,0,0,canvasWidth,canvasHeight);
 
-  imageData = c.getImageData(0,0,w,h);
+  imageData = context.getImageData(0,0,canvasWidth,canvasHeight);
 
   data = imageData.data;
   for (var i = 0; i < data.length; i+=4) {
@@ -151,20 +139,10 @@ function draw(v, c, w, h, filter, options) {
         break;
       case 'blackandwhiteluminance':
         var luminance = ((red * 299) + (green * 587) + (blue * 114)) / 1000; // Gives a value from 0 - 255
-        red = luminance
-        green = luminance
+        red = luminance;
+        green = luminance;
         blue = luminance;
-        alpha = 255;
 
-        break;
-      case 'darkness':
-        if (options) {
-          if (options.min) {
-            if (red > options.min) red = options.min;
-            if (green > options.min) green = options.min;
-            if (blue > options.min) blue = options.min;
-          }
-        }
         break;
     }
     data[i] = red;
@@ -173,9 +151,18 @@ function draw(v, c, w, h, filter, options) {
   }
   imageData.data = data;
 
-  c.putImageData(imageData, 0, 0);
+  context.putImageData(imageData, 0, 0);
 
-  requestFrame = requestAnimFrame(function() {
-    draw(v,c,w,h,filter,options);
+  requestAnimFrame(function() {
+    draw();
   });
 }
+
+window.requestAnimFrame = (function() {
+  return window.requestAnimationFrame       ||
+         window.webkitRequestAnimationFrame ||
+         window.mozRequestAnimationFrame    ||
+         function(callback) {
+           window.setTimeout(callback, 1000 / 60);
+         };
+})();

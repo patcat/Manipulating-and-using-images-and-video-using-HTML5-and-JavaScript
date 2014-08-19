@@ -1,22 +1,20 @@
 var video = document.getElementById('our-video'),
     canvas = document.getElementById('our-canvas'),
+    context = canvas.getContext('2d'),
     canvasWidth = Math.floor(canvas.clientWidth),
-    canvasHeight = Math.floor(canvas.clientHeight),
-    context = canvas.getContext('2d');
+    canvasHeight = Math.floor(canvas.clientHeight);
 
 video.addEventListener('play', function() {
-  draw(video, context, canvasWidth, canvasHeight);
+  draw();
 }, false);
 
-draw(video, context, canvasWidth, canvasHeight);
-
-function draw(v,c,w,h) {
-  if (v.paused || v.ended) return false;
+function draw() {
+  if (video.paused || video.ended) return false;
   
-  c.drawImage(v,0,0,w,h);
+  context.drawImage(video,0,0,canvasWidth,canvasHeight);
 
   requestAnimFrame(function() {
-    draw(v,c,w,h);
+    draw();
   });
 }
 
