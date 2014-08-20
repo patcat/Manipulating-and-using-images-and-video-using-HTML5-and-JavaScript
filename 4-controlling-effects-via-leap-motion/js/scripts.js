@@ -17,8 +17,6 @@ Leap.loop({background: true}, {
     var pinchStrength = hand.pinchStrength.toPrecision(2),
         rotation = -1 * (hand.roll() * (180 / Math.PI) - 180);
 
-    //console.log(pinchStrength);
-
     if (hand.frame.hands.length > 1) {
       if (hand.type == 'left') {
         minThreshold = pinchStrength * 255;
