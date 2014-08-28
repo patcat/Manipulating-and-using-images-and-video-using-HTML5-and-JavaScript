@@ -6,7 +6,7 @@ var video = document.getElementById('our-video'),
     filter,
     options,
     minThreshold,
-    maxThreshold; // we store our requestanimationframe in here so we can stop and start it again
+    maxThreshold;
 
 video.addEventListener('play', function() {
   draw();
